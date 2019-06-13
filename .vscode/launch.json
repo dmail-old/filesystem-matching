@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "node",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "program": "${file}",
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "/*": "${workspaceRoot}/*"
+      },
+      "smartStep": true,
+      "skipFiles": [
+        // force-multiline
+        "node_modules/**",
+        "<node_internals>/**/*.js"
+      ]
+    },
+    {
+      "name": "jsenv-node",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      "program": "${workspaceFolder}/script/run-node/run-node.js",
+      "args": ["--file=${relativeFile}"],
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "/*": "${workspaceRoot}/*"
+      },
+      "smartStep": true,
+      "skipFiles": [
+        // force-multiline
+        "node_modules/**",
+        "<node_internals>/**/*.js"
+      ]
+    }
+  ]
+}

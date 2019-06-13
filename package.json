@@ -1,0 +1,53 @@
+{
+	"name": "@dmail/filesystem-matching",
+	"version": "1.0.0",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dmail/filesystem-matching"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"module": "index.js",
+	"main": "dist/commonjs/main.js",
+	"files": [
+		"/index.js",
+		"/src/",
+		"/dist/"
+	],
+	"dependencies": {
+		"@dmail/project-structure": "4.2.0",
+		"@dmail/cancellation": "2.1.0",
+		"@jsenv/operating-system-path": "1.0.0"
+	},
+	"devDependencies": {
+		"@jsenv/core": "5.48.0",
+		"@jsenv/codecov-upload": "1.6.0",
+		"@jsenv/eslint-config": "8.0.0",
+		"@jsenv/eslint-import-resolver": "4.6.0",
+		"@jsenv/prettier-config": "1.0.0",
+		"@jsenv/prettier-check-project": "2.3.0",
+		"@jsenv/node-module-import-map": "1.5.0",
+		"@dmail/assert": "3.4.0",
+		"babel-eslint": "11.0.0-beta.0",
+		"prettier": "1.16.3",
+		"codecov": "2.3.0",
+		"eslint": "5.1.0",
+		"eslint-plugin-import": "2.6.0",
+		"rimraf": "2.6.2"
+	},
+	"scripts": {
+		"generate-import-map": "node ./script/generate-import-map/generate-import-map.js",
+		"test": "node ./script/test/test.js",
+		"eslint-check-project": "eslint .",
+		"prettier-check-project": "node ./script/prettier-check-project/prettier-check-project.js",
+		"generate-coverage": "node ./script/generate-coverage/generate-coverage.js",
+		"upload-coverage": "node ./script/upload-coverage/upload-coverage.js",
+		"generate-commonjs-bundle": "node ./script/generate-commonjs-bundle/generate-commonjs-bundle.js",
+		"dist": "npm run clean && npm run generate-global-bundle && npm run generate-commonjs-bundle",
+		"clean": "rimraf dist && rimraf coverage",
+		"reinstall": "npm run clean && rimraf node_modules && npm install",
+		"prepublishOnly": "npm run dist"
+	}
+}
