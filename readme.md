@@ -4,4 +4,4 @@
 [![build](https://travis-ci.com/dmail/filesystem-matching.svg?branch=master)](http://travis-ci.com/dmail/filesystem-matching)
 [![codecov](https://codecov.io/gh/dmail/filesystem-matching/branch/master/graph/badge.svg)](https://codecov.io/gh/dmail/filesystem-matching)
 
-> Get all file matching patterns inside a folder.
+> Get list of file matching patterns inside a folder.
