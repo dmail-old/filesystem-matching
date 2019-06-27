@@ -56,7 +56,7 @@ export const matchAllFileInsideFolder = async ({
           )
             return
 
-          visitFolder(folderEntryPathname)
+          await visitFolder(folderEntryPathname)
           return
         }
 

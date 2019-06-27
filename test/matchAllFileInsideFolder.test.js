@@ -8,16 +8,17 @@ const metaDescription = {
   "/*.js": {
     source: true,
   },
-  "/subfolder/": { source: true },
+  "/subfolder/": {
+    source: true,
+  },
 }
-const relativePathArray = await matchAllFileInsideFolder({
+const matchingFileResultArray = await matchAllFileInsideFolder({
   folderPath: `${testFolderPath}${sep}folder`,
   metaDescription,
   predicate: ({ source }) => source,
-  transformFile: ({ relativePath }) => relativePath,
 })
-const actual = relativePathArray.sort()
-const expected = ["/a.js", "/b.js", "/subfolder/c.js"]
+const actual = matchingFileResultArray.map(({ relativePath }) => relativePath).sort()
+const expected = ["/a.js", "/b.js", "/subfolder/c.json"]
 
 assert({
   actual,
