@@ -12,7 +12,7 @@ export const matchAllFileInsideFolder = async ({
   folderPath,
   metaDescription,
   predicate,
-  transformFile = (file) => file,
+  matchingFileOperation = () => null,
 }) => {
   if (typeof folderPath !== "string")
     throw new TypeError(`folderPath must be a string, got ${folderPath}`)
@@ -20,10 +20,10 @@ export const matchAllFileInsideFolder = async ({
     throw new TypeError(`metaDescription must be a object, got ${metaDescription}`)
   if (typeof predicate !== "function")
     throw new TypeError(`predicate must be a function, got ${predicate}`)
-  if (typeof transformFile !== "function")
-    throw new TypeError(`transformFile must be a function, got ${transformFile}`)
+  if (typeof matchingFileOperation !== "function")
+    throw new TypeError(`matchingFileOperation must be a function, got ${matchingFileOperation}`)
 
-  const results = []
+  const matchingFileResultArray = []
   const rootFolderPathname = operatingSystemPathToPathname(folderPath)
   const visitFolder = async (folderPathname) => {
     const folderPath = pathnameToOperatingSystemPath(folderPathname)
@@ -54,28 +54,29 @@ export const matchAllFileInsideFolder = async ({
               predicate,
             })
           )
-            return null
+            return
 
-          return visitFolder(folderEntryPathname)
+          visitFolder(folderEntryPathname)
+          return
         }
 
         if (lstat.isFile()) {
           const meta = pathnameToMeta({ pathname: folderEntryRelativePath, metaDescription })
-          if (!predicate(meta)) {
-            return null
-          }
+          if (!predicate(meta)) return
 
-          const result = await createOperation({
+          const relativePath = folderEntryRelativePath
+          const operationResult = await createOperation({
             cancellationToken,
             start: () =>
-              transformFile({
-                relativePath: folderEntryRelativePath,
+              matchingFileOperation({
+                cancellationToken,
+                relativePath,
                 meta,
                 lstat,
               }),
           })
-          results.push(result)
-          return null
+          matchingFileResultArray.push({ relativePath, meta, lstat, operationResult })
+          return
         }
 
         // we ignore symlink because entryFolder is recursively traversed
@@ -84,14 +85,12 @@ export const matchAllFileInsideFolder = async ({
         // like infinite recursion of whatever.
         // that we could handle using an object of pathname already seen but it will be useless
         // because entryFolder is recursively traversed
-
-        return null
       }),
     )
   }
   await visitFolder(rootFolderPathname)
 
-  return results
+  return matchingFileResultArray
 }
 
 const readDirectory = (pathname) =>
