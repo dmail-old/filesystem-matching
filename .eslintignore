@@ -1,4 +1,4 @@
-/node_modules
-/dist
 /.dist
-/coverage
+/coverage/
+/dist/
+/node_modules/

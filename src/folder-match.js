@@ -1,11 +1,11 @@
 import { readdir, lstat } from "fs"
+import { createCancellationToken, createOperation } from "@dmail/cancellation"
 import {
   operatingSystemPathToPathname,
   pathnameToOperatingSystemPath,
   pathnameToRelativePathname,
 } from "@jsenv/operating-system-path"
-import { createCancellationToken, createOperation } from "@dmail/cancellation"
-import { pathnameCanContainsMetaMatching, pathnameToMeta } from "@dmail/project-structure"
+import { resolveMetaMapPatterns, urlCanContainsMetaMatching, urlToMeta } from "@jsenv/url-meta"
 
 export const matchAllFileInsideFolder = async ({
   cancellationToken = createCancellationToken(),
@@ -25,6 +25,7 @@ export const matchAllFileInsideFolder = async ({
 
   const matchingFileResultArray = []
   const rootFolderPathname = operatingSystemPathToPathname(folderPath)
+  const metaMap = resolveMetaMapPatterns(metaDescription, `file://${rootFolderPathname}`)
   const visitFolder = async (folderPathname) => {
     const folderPath = pathnameToOperatingSystemPath(folderPathname)
 
@@ -48,20 +49,24 @@ export const matchAllFileInsideFolder = async ({
 
         if (lstat.isDirectory()) {
           if (
-            !pathnameCanContainsMetaMatching({
-              pathname: folderEntryRelativePath,
-              metaDescription,
+            !urlCanContainsMetaMatching({
+              url: `file://${rootFolderPathname}${folderEntryRelativePath}`,
+              metaMap,
               predicate,
             })
-          )
+          ) {
             return
+          }
 
           await visitFolder(folderEntryPathname)
           return
         }
 
         if (lstat.isFile()) {
-          const meta = pathnameToMeta({ pathname: folderEntryRelativePath, metaDescription })
+          const meta = urlToMeta({
+            url: `file://${rootFolderPathname}${folderEntryRelativePath}`,
+            metaMap,
+          })
           if (!predicate(meta)) return
 
           const relativePath = folderEntryRelativePath
