@@ -5,27 +5,32 @@ import {
   pathnameToOperatingSystemPath,
   pathnameToRelativePathname,
 } from "@jsenv/operating-system-path"
-import { resolveMetaMapPatterns, urlCanContainsMetaMatching, urlToMeta } from "@jsenv/url-meta"
+import { normalizeSpecifierMetaMap, urlCanContainsMetaMatching, urlToMeta } from "@jsenv/url-meta"
 
 export const matchAllFileInsideFolder = async ({
   cancellationToken = createCancellationToken(),
   folderPath,
-  metaDescription,
+  specifierMetaMap,
   predicate,
   matchingFileOperation = () => null,
 }) => {
-  if (typeof folderPath !== "string")
+  if (typeof folderPath !== "string") {
     throw new TypeError(`folderPath must be a string, got ${folderPath}`)
-  if (typeof metaDescription !== "object")
-    throw new TypeError(`metaDescription must be a object, got ${metaDescription}`)
-  if (typeof predicate !== "function")
+  }
+  if (typeof predicate !== "function") {
     throw new TypeError(`predicate must be a function, got ${predicate}`)
-  if (typeof matchingFileOperation !== "function")
+  }
+  if (typeof matchingFileOperation !== "function") {
     throw new TypeError(`matchingFileOperation must be a function, got ${matchingFileOperation}`)
+  }
 
   const matchingFileResultArray = []
   const rootFolderPathname = operatingSystemPathToPathname(folderPath)
-  const metaMap = resolveMetaMapPatterns(metaDescription, `file://${rootFolderPathname}`)
+  const specifierMetaMapNormalized = normalizeSpecifierMetaMap(
+    specifierMetaMap,
+    `file://${rootFolderPathname}`,
+    { forceHttpResolutionForFile: true },
+  )
   const visitFolder = async (folderPathname) => {
     const folderPath = pathnameToOperatingSystemPath(folderPathname)
 
@@ -51,7 +56,7 @@ export const matchAllFileInsideFolder = async ({
           if (
             !urlCanContainsMetaMatching({
               url: `file://${rootFolderPathname}${folderEntryRelativePath}`,
-              metaMap,
+              specifierMetaMap: specifierMetaMapNormalized,
               predicate,
             })
           ) {
@@ -65,7 +70,7 @@ export const matchAllFileInsideFolder = async ({
         if (lstat.isFile()) {
           const meta = urlToMeta({
             url: `file://${rootFolderPathname}${folderEntryRelativePath}`,
-            metaMap,
+            specifierMetaMap: specifierMetaMapNormalized,
           })
           if (!predicate(meta)) return
 

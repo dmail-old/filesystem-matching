@@ -1,2 +1,4 @@
-export { matchAllFileInsideFolder } from "./src/folder-match.js"
-export { sortPathnameArray } from "./src/sort-pathname-array.js"
+export {
+  matchAllFileInsideFolder,
+} from "./src/matchAllFileInsideFolder/matchAllFileInsideFolder.js"
+export { sortPathnameArray } from "./src/sortPathnameArray/sortPathnameArray.js"

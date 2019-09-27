@@ -1,7 +1,7 @@
 # Filesystem matching
 
 [![npm package](https://img.shields.io/npm/v/@dmail/filesystem-matching.svg)](https://www.npmjs.com/package/@dmail/filesystem-matching)
-[![build](https://travis-ci.com/dmail/filesystem-matching.svg?branch=master)](http://travis-ci.com/dmail/filesystem-matching)
+[![ci status](https://github.com/dmail/filesystem-matching/workflows/ci/badge.svg)](https://github.com/dmail/filesystem-matching/actions)
 [![codecov](https://codecov.io/gh/dmail/filesystem-matching/branch/master/graph/badge.svg)](https://codecov.io/gh/dmail/filesystem-matching)
 
 > Collect a subset of files inside a folder.

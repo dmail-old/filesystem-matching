@@ -4,7 +4,7 @@ import { assert } from "@dmail/assert"
 import { matchAllFileInsideFolder } from "../index.js"
 
 const testFolderPath = importMetaURLToFolderPath(import.meta.url)
-const metaDescription = {
+const specifierMetaMap = {
   "/*.js": {
     source: true,
   },
@@ -14,7 +14,7 @@ const metaDescription = {
 }
 const matchingFileResultArray = await matchAllFileInsideFolder({
   folderPath: `${testFolderPath}${sep}folder`,
-  metaDescription,
+  specifierMetaMap,
   predicate: ({ source }) => source,
 })
 const actual = matchingFileResultArray.map(({ relativePath }) => relativePath).sort()
